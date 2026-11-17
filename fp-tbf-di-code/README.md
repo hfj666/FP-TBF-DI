@@ -3,7 +3,19 @@
 Core implementation for **基于局部一致规则的乳腺超声病灶逐批分类方法**
 (Sequential Classification of Breast Ultrasound Lesions Using Locally Consistent Rules).
 FP-TBF-DI maintains an FP-tree, fits three scoring branches on each revealed
-training prefix, and averages the scores to classify the next batch.
+training prefix, and combines the three scores using fixed weights selected
+with continuous ant colony optimization (ACOR):
+
+| Branch | Weight |
+| --- | ---: |
+| A | 0.38633621372064075 |
+| B | 0.3109653252978891 |
+| C | 0.30269846098146996 |
+
+The weighted score is classified as malignant at zero or above. The weights
+come from the pooled internal development predictions and are reused for
+every batch. The pooled development accuracy is an in-sample result for the
+fusion weights. The runner records the weights in its output manifest.
 
 ## Run the synthetic example
 

@@ -17,5 +17,8 @@ tree = FPTree().update(x[:300], y[:300])
 model = SimplifiedFPTBF().fit(x[:300], y[:300], tree)
 scores = model.decision_scores(x[300:])
 assert scores.shape == (20, 6) and np.isfinite(scores).all()
-np.testing.assert_allclose(scores[:, -1], scores[:, 2:5].mean(axis=1))
+A, B, C = scores[:, 2:5].T
+np.testing.assert_allclose(scores[:, -1], (
+    0.38633621372064075 * A + 0.3109653252978891 * B + 0.30269846098146996 * C
+), atol=1e-12, rtol=0)
 print('FP-TBF-DI smoke test passed: 20 queries, finite branch and fusion scores.')

@@ -16,6 +16,8 @@ from .projected_selection import select
 from .reference_comparators import CumulativeLogistic
 from .selection import CoveragePool
 
+ACOR_FUSION_WEIGHTS = (0.38633621372064075, 0.3109653252978891, 0.30269846098146996)
+
 
 def _fit_score(train,y,query):
     return LogisticRegression(C=1,solver='liblinear',max_iter=1000).fit(train,y).decision_function(query)
@@ -117,8 +119,9 @@ class SimplifiedFPTBF:
         scores=self.core_scores(query)
         c,_,details=predict_c(self.x,self.y,query,scores['base'])
         self.last_c_details=details
-        return np.column_stack((scores['base'],scores['logistic'],scores['A'],scores['B'],c,
-                                np.mean([scores['A'],scores['B'],c],axis=0)))
+        branch_scores = np.column_stack((scores['A'], scores['B'], c))
+        fused = branch_scores @ ACOR_FUSION_WEIGHTS
+        return np.column_stack((scores['base'], scores['logistic'], branch_scores, fused))
 
     def decision_function(self,query):
         return self.decision_scores(query)[:,-1]

@@ -11,7 +11,7 @@ for _name in ('OPENBLAS_NUM_THREADS','MKL_NUM_THREADS','OMP_NUM_THREADS'):
 
 import numpy as np
 
-from src.fp_tbf_simplified import SimplifiedFPTBF
+from src.fp_tbf_simplified import ACOR_FUSION_WEIGHTS, SimplifiedFPTBF
 from src.fptree import FPTree
 from src.metrics import metrics
 
@@ -62,6 +62,7 @@ def main():
         result[ev]=metrics(np.array([r['label'] for r in subset]),np.array([r['fusion'] for r in subset]))
     sources={'implementation': ROOT/'src/fp_tbf_simplified.py', 'data': args.data, 'splits': args.splits}
     manifest=dict(method='FP-TBF-DI',seed=args.seed,batch=args.batch_size,history_predictions_used=False,
+                  fusion_weights=dict(zip(('A','B','C'), ACOR_FUSION_WEIGHTS, strict=True)),
                   sources={name:hashlib.sha256(path.read_bytes()).hexdigest() for name,path in sources.items()})
     for name,value in [('summary',result),('fits',fits),('manifest',manifest)]:
         (args.out/f'{name}.json').write_text(json.dumps(value,ensure_ascii=False,indent=2),encoding='utf-8')
