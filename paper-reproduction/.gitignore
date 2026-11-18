@@ -1,0 +1,17 @@
+__pycache__/
+.venv/
+data/
+results/
+run-output/
+experiment_*/
+results_*/
+*.csv
+*.json
+*.json.gz
+*.npy
+*.npz
+*.xlsx
+*.png
+*.svg
+/reference.txt
+/paper/FP_TBF_DI_中文论文*.md

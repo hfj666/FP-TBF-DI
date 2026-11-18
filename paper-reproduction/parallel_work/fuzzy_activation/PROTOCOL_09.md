@@ -1,0 +1,7 @@
+# Round 09 — reserve half of each class budget before harmonic fill
+
+Protocol fixed before fitting. All 11 new false negatives from harmonic coverage lost some previously exact positive rules with positive net contribution. Six lost exact positive count, four kept the count, and one gained a match. The added-minus-removed score term is negative in all 11. This decomposition uses each fitted model's own weights and cannot identify an isolated causal effect of membership.
+
+Change only the selector relative to original HVDM. Reserve the first 16 rules per class in the original CoveragePool(.5, 64) greedy order. Fill the other 16 per class by the previously fixed harmonic novelty selector, initializing same-class coverage counts and maximum Jaccard overlap with the reserved rules. Keep alpha .5, quality, overlap penalty, ties, FP pool gates and the 32+32 budget. The symmetric half-budget is fixed as a single compromise between full replacement and original selection. No reserve-size search.
+
+Use the same HVDM distance, confidence, Gaussian firing, widths, unconstrained consequents, cold initialization, objective, scaling and optimizer. Threshold 0. Use the same three seeds, both batch sizes, 54 fits and 3294 predictions, excluding each split's 213 holdout rows. Compare macro BA/AUC and paired new/corrected FN against HVDM and cumulative logistic. Track the previous 17 disagreements. This is exploratory development on seen errors.

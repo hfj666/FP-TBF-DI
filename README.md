@@ -14,3 +14,7 @@ python demo.py
 The demo generates its inputs locally. See the [implementation guide](fp-tbf-di-code/README.md)
 for the command-line runner and input format. The clinical score table, study
 split indices, and per-record study predictions are outside the public repository.
+
+See the [paper reproduction code](paper-reproduction/README.md) for the
+manuscript's equal-weight model, split generation, ablations, grouped
+evaluation, timing, and fusion-weight comparison.

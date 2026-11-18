@@ -1,0 +1,134 @@
+项目|Item
+本研究设置|Study setting
+原始分析单位|Unit of analysis
+病灶记录|Lesion record
+记录数与特征数|Records and features
+1062条，18项评分|1062 records, 18 scores
+类别分布|Class distribution
+良性418条，恶性644条|Benign: 418, malignant: 644
+每个划分的训练流/留出|Training stream / holdout per split
+849条/213条|849 / 213 records
+初始训练/后续预测|Initial training / later predictions
+300条/549条|300 / 549 records
+划分种子|Split seeds
+批量大小|Batch size
+50、100条；末批49条|50 or 100, final batch: 49
+内部评价规模|Internal evaluation size
+6配置×549＝3294次预测事件|6 configurations × 549 = 3294 predictions
+内部事件涉及的不同原始行|Distinct records evaluated internally
+944条，跨配置重复出现|944 records, reused across configurations
+种子|Seed
+批量|Batch size
+准确率|Accuracy
+精确率|Precision
+敏感度|Sensitivity
+特异度|Specificity
+实际类别|Actual class
+预测恶性|Predicted malignant
+预测良性|Predicted benign
+合计|Total
+恶性|Malignant
+良性|Benign
+方法|Method
+准确率/%|Accuracy (%)
+精确率/%|Precision (%)
+敏感度/%|Sensitivity (%)
+特异度/%|Specificity (%)
+覆盖互补Sugeno|Coverage Sugeno
+A路：投影筛选|A: Joint projection
+B路：距离修正|B: Distance adjustment
+C路：D/I复核|C: D/I review
+覆盖互补＋A路|Coverage + A
+累计逻辑回归|Cumulative logistic regression
+原完整FP-TBF|Original FP-TBF
+参照方法|Comparator
+纠正原错误/次|Errors corrected
+新增错误/次|New errors
+净增加正确/次|Net correct
+A+LR/s|A+LR (s)
+F1/%|F1 (%)
+BA/%|BA (%)
+A路|Branch A
+B路|Branch B
+D层后融合|Fusion after D
+累计训练/条|Training records
+本阶段新增/条|New records
+组合状态|Vector status
+事件数|Predictions
+恶性/良性|Malignant / benign
+已出现|Seen
+未出现|Unseen
+三种方法相同|All three methods
+筛选|Rule selection
+拟合上限|Iteration limit
+覆盖互补|Coverage
+联合投影|Joint projection
+C路配置|Branch C variant
+C路准确率/%|C accuracy (%)
+C路BA/%|C BA (%)
+融合准确率/%|Fusion accuracy (%)
+融合BA/%|Fusion BA (%)
+融合AUC|Fusion AUC
+相较完整融合净增加正确/次|Net correct vs. full fusion
+仅基础分数|Base score only
+完整C路|Full branch C
+去P|Without P
+去E|Without E
+去U|Without U
+去D|Without D
+去I|Without I
+评价|Evaluation
+原版准确率/%|Original accuracy (%)
+精简准确率/%|Reduced accuracy (%)
+原版AUC|Original AUC
+精简AUC|Reduced AUC
+融合标签变化/次|Changed fusion labels
+C路净增加正确/次|C net correct
+逐批|Sequential
+留出：300条|Holdout (300)
+留出：500条|Holdout (500)
+留出：700条|Holdout (700)
+留出：849条|Holdout (849)
+模型|Model
+逐批：六配置均值|Sequential (6 configurations)
+最终留出：六配置均值|Final holdout (6 configurations)
+评分向量分组：五折均值|Vector-grouped CV (5 folds)
+原始编码逻辑回归|Raw-feature logistic regression
+独热逻辑回归|One-hot logistic regression
+交互逻辑回归|Interaction logistic regression
+随机森林|Random forest
+直方图梯度提升|Histogram gradient boosting
+替换方案|Replacement
+逐批指标|Sequential metrics
+逐批净增正确事件|Sequential net correct
+最终留出指标|Final holdout metrics
+最终留出净增正确事件|Holdout net correct
+A→覆盖互补Sugeno|A → Coverage Sugeno
+B→原始逻辑分数|B → Raw logistic score
+B→数值距离修正|B → Numeric distance adjustment
+C→基础Sugeno|C → Base Sugeno
+预测事件|Predictions
+A+LR净增正确事件|A+LR net correct
+留出，前缀300|Holdout (300)
+留出，前缀500|Holdout (500)
+留出，前缀700|Holdout (700)
+留出，前缀849|Holdout (849)
+评分向量分组|Vector-grouped CV
+划分|Split
+追加的树维护/ms|Tree insertion (ms)
+重建的树维护/ms|Tree rebuilding (ms)
+追加总时间/s|Insertion total (s)
+重建总时间/s|Rebuilding total (s)
+三路融合/s|Three-branch fusion (s)
+A+LR节省/%|A+LR savings (%)
+六次平均BA/%|Mean BA (%)
+单次五折平均BA范围/%|BA range across partitions (%)
+六次平均AUC|Mean AUC
+覆盖+LR|Coverage + LR
+融合结构|Fusion structure
+BA差/百分点|BA difference (pp)
+AUC差|AUC difference
+净增加正确预测/次|Net correct predictions
+三路|Three branches
+双路|Two branches
+最终留出|Final holdout

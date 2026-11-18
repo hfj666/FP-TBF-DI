@@ -1,0 +1,5 @@
+# Round 06 — shared HVDM width
+
+Protocol fixed after the paired diagnosis and before any new candidate prediction. The original low-activation events show fewer exact positive matches and a negative contribution from learned rule-specific widths in 16/16 cases. Among the 14 newly missed by L2 pooling, swapping pooling alone flips 10. The next experiment keeps the original HVDM sum normalization and changes only width parameterization: all 64 rules share one width, learned on the available prefix. Use the original .25 initialization and [.03, 2] bounds, with the original HVDM distances, confidence, rule sets, unconstrained 64 zero-order consequents, BCE/L2, and cold L-BFGS-B 500 iterations. No pooling, threshold change, or width search.
+
+Use exactly the saved 57 HVDM states and 54 unique matched fits, three seeds, both batch sizes, 549 predictions per configuration. Compare BA/AUC and paired FN versus original HVDM and cumulative logistic at threshold 0, and track the two diagnostic strata. Only previously authorized stream rows, no use of split-specific 213 holdout. Component selected using seen events, so results are internal exploratory evidence.
