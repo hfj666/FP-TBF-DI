@@ -17,6 +17,25 @@ come from the pooled internal development predictions and are reused for
 every batch. The pooled development accuracy is an in-sample result for the
 fusion weights. The runner records the weights in its output manifest.
 
+## Search fusion weights with ACOR
+
+From the `fp-tbf-di-code` directory, pass a local development CSV containing
+columns `A,B,C,label`. The first three are branch scores and `label` is
+`-1` or `+1`. Use only scores designated for weight fitting. If using
+runner output, select the development `stream` rows before passing the CSV.
+
+```sh
+python search_acor_fusion_weights.py development_scores.csv --seed 20261117
+```
+
+The search starts with 96 candidates and runs 100 rounds of 96 proposals.
+Each round samples around candidates in the ranked archive, projects proposals
+onto nonnegative weights that sum to one, and retains the best 96.
+It maximizes the number of correct classifications at threshold zero, with ties
+favoring weights closer to equal weighting. The script prints the weights
+and their in-sample development accuracy. The published weights were fitted to
+pooled internal development scores, which are distributed separately.
+
 ## Run the synthetic example
 
 Use Python 3.12 and run these commands from the repository root.
