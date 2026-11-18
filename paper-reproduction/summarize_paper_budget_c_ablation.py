@@ -1,4 +1,5 @@
 """Report the fixed supplement and revise the manuscript without changing models."""
+import argparse
 import csv
 import json
 import re
@@ -37,6 +38,10 @@ def c_table(result,variants,evaluation,title):
 
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--write-manuscript', action='store_true',
+                        help='Also build the historical manuscript revision from a local draft.')
+    args = parser.parse_args()
     selection=json.loads((OUT/'selection_summary.json').read_text(encoding='utf-8'))
     c=json.loads((OUT/'c_summary.json').read_text(encoding='utf-8'))
     verify=json.loads((OUT/'verification.json').read_text(encoding='utf-8'))
@@ -148,6 +153,8 @@ P、E、U的逐项删除均未改变最终融合标签，但P和E的删除会改
 复现文件：根目录`run_paper_budget_c_ablation.py`、`verify_paper_budget_c_ablation.py`、`summarize_paper_budget_c_ablation.py`；事先协议位于`paper/统一预算与C路消融实验协议.md`；分配置指标位于`results/paper_budget_c_ablation/configuration_metrics.csv`；原始预测、拟合状态、完整重放与校验记录保存在同一结果目录。
 '''
     (ROOT/'paper/统一预算与C路消融实验报告.md').write_text(report,encoding='utf-8')
+    if not args.write_manuscript:
+        return
 
     text=(ROOT/'paper/FP_TBF_中文论文修订稿.md').read_text(encoding='utf-8')
     def replace(a,b):

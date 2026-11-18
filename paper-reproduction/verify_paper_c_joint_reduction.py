@@ -1,4 +1,5 @@
 """Verify joint-reduction artifacts, standalone entry, and manuscript tables."""
+import argparse
 import csv
 import hashlib
 import inspect
@@ -17,6 +18,10 @@ OUT=ROOT/'results/paper_c_joint_reduction'
 
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--check-manuscript', action='store_true',
+                        help='Also verify table and equation numbering in the local manuscript.')
+    args = parser.parse_args()
     manifest=json.loads((OUT/'manifest.json').read_text(encoding='utf-8'))
     assert all(hashlib.sha256((ROOT/name).read_bytes()).hexdigest()==sha for name,sha in manifest['sources'].items())
     assert list(inspect.signature(predict_c).parameters)==['x','y','query','base']
@@ -45,11 +50,14 @@ def main():
         for key,field in [('C','simple_c'),('fusion','simple_fusion'),('base','base'),('A','A'),('B','B')]:
             entry_error=max(entry_error,abs(float(r[key])-float(original[field])))
     assert entry_error<=1e-7
-    text=(ROOT/'paper/FP_TBF_DI_中文论文精简修订稿.md').read_text(encoding='utf-8')
-    assert list(map(int,re.findall(r'^\*\*表(\d+) ',text,re.M)))==list(range(1,15))
-    assert list(map(int,re.findall(r'\\tag\{(\d+)\}',text)))==list(range(1,16))
-    assert text.count('\\[')==text.count('\\]') and text.count('\\(')==text.count('\\)')
-    assert '\ufffd' not in text
+    manuscript = {}
+    if args.check_manuscript:
+        text=(ROOT/'paper/FP_TBF_DI_中文论文精简修订稿.md').read_text(encoding='utf-8')
+        assert list(map(int,re.findall(r'^\*\*表(\d+) ',text,re.M)))==list(range(1,15))
+        assert list(map(int,re.findall(r'\\tag\{(\d+)\}',text)))==list(range(1,16))
+        assert text.count('\\[')==text.count('\\]') and text.count('\\(')==text.count('\\)')
+        assert '\ufffd' not in text
+        manuscript = dict(manuscript_tables=14, manuscript_equations=15)
     checks=json.loads((OUT/'checks.json').read_text(encoding='utf-8'))
     assert len(checks)==75
     archive=[r['archive_error'] for r in checks if r['archive_error'] is not None]
@@ -60,8 +68,7 @@ def main():
                native_DI_checks=len(native),native_DI_max_error=max(native),
                original_archive_checks=len(archive),original_archive_max_error=max(archive),
                standalone_entry_predictions=len(entry),standalone_entry_max_error=entry_error,
-               manuscript_tables=14,manuscript_equations=15,
-               production_C_history_prediction_inputs=False)
+               production_C_history_prediction_inputs=False, **manuscript)
     (OUT/'verification.json').write_text(json.dumps(proof,ensure_ascii=False,indent=2),encoding='utf-8')
     print(json.dumps(proof,ensure_ascii=False))
 

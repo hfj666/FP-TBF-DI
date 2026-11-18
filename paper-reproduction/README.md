@@ -31,7 +31,8 @@ the six overlapping configurations.
 | Analysis | Run with `python` | Inputs beyond the score table and split indices |
 | --- | --- | --- |
 | Main stream and final holdout | `run_fp_tbf_simplified.py` | None |
-| Historical three-branch holdout replay | `run_three_way_retrospective_holdout.py` | Historical rescue-interaction stream predictions |
+| Historical three-branch stream | `regenerate_reference_stream.py` | None |
+| Historical three-branch holdout replay | `run_three_way_retrospective_holdout.py` | Regenerated reference stream |
 | Training checkpoints | `run_paper_incremental_checkpoints.py` | Historical stream and holdout replay |
 | Matched rule budgets and original C ablations | `run_paper_budget_c_ablation.py` | Historical stream and holdout replay |
 | Joint P/E/U removal and simplified-model checkpoints | `run_paper_c_joint_reduction.py` | Historical stream, holdout replay and checkpoint metrics |
@@ -42,33 +43,72 @@ the six overlapping configurations.
 | Matched fusion budgets | `run_paper_matched_fusion_budget.py` | Rule-budget and joint-reduction predictions |
 | Repeated grouped evaluation | `run_paper_grouped_stability.py` | Evidence-extension grouped splits and predictions |
 | Rule selection by fusion structure | `run_paper_selection_cross.py` | Rule-budget, joint-reduction and repeated grouped results |
-| Literature-inspired baseline alignment | `run_paper_huang_alignment.py` | Direct-comparison and evidence-extension predictions |
+| Literature-inspired baseline alignment | `run_paper_huang_alignment.py` | Evidence-extension predictions |
 | PSO, GA, ABC and ACOR comparison | `run_paper_fusion_optimizer_comparison.py` | Joint-reduction predictions |
 
 The `verify_paper_*.py` and `summarize_paper_*.py` scripts check and summarize
 locally generated outputs. Run the verifier before its corresponding
 summarizer. The joint-reduction verifier also reads an equal-weight reference
 run for seed 17, batch size 100 at `results/fp_tbf_di_entry_check`.
-Generate it with `python run_fp_tbf_simplified.py --seed 17 --batch-size 100
---fusion equal --out results/fp_tbf_di_entry_check`. The verifier's manuscript
-format checks also require the local `paper/FP_TBF_DI_中文论文精简修订稿.md`.
+The verifier checks manuscript formatting only with `--check-manuscript`.
+The summarizers regenerate old manuscript drafts only with
+`--write-manuscript` and the corresponding local draft.
 Timing results depend on machine, numerical libraries and thread settings.
 For historical timing runs, set OPENBLAS_NUM_THREADS, MKL_NUM_THREADS and
 OMP_NUM_THREADS to 1 in the shell before launching Python.
 
 ## Historical inputs and rendering
 
-The archived stream scores expected by the checkpoint and C-branch experiments
-are at `parallel_work/robust_learning/experiment_rescue_interactions/predictions.csv`.
-The corresponding holdout file is
+After generating splits, run the following sequence to reproduce the primary
+ablations and grouped evaluations from the local score table:
+
+```sh
+python regenerate_reference_stream.py
+python run_three_way_retrospective_holdout.py
+python run_paper_incremental_checkpoints.py
+python run_paper_budget_c_ablation.py
+python verify_paper_budget_c_ablation.py
+python summarize_paper_budget_c_ablation.py
+python run_paper_c_joint_reduction.py
+python run_fp_tbf_simplified.py --seed 17 --batch-size 100 --fusion equal --out results/fp_tbf_di_entry_check
+python verify_paper_c_joint_reduction.py
+python summarize_paper_c_joint_reduction.py
+python run_paper_evidence_extension.py
+python run_paper_frozen_update.py
+python summarize_paper_evidence_extension.py
+python run_paper_grouped_stability.py
+```
+
+The remaining matched comparisons and the optimizer study use the outputs
+from that sequence:
+
+```sh
+python run_paper_parsimony_cost.py
+python run_paper_a_lr_cost.py
+python run_paper_matched_fusion_budget.py
+python run_paper_selection_cross.py
+python run_paper_huang_alignment.py
+python run_paper_fusion_scale.py
+python run_paper_fusion_mechanisms.py
+python run_paper_fusion_optimizer_comparison.py
+```
+
+The reference stream generator writes to
+`parallel_work/robust_learning/experiment_rescue_interactions/predictions.csv`
+by default. It predicts each batch using only the already revealed prefix
+and previously computed coverage scores. The holdout replay writes
 `results/three_way_retrospective_holdout/predictions.csv`.
+Use a fresh working directory for an independent replication and keep these
+case-level outputs local.
+
 The source tree includes upstream research scripts under `parallel_work/` and
 supporting runners such as `run_online_study.py` and
-`run_direct_comparison.py`. Historical runs check upstream manifests and
-predictions. For an exact replay of those runs, obtain the authorized archives
-and preserve their filenames. The generated splits suffice for the main
-model, while older comparisons also use their original `choices.json` and,
-in some cases, the original split-file bytes for provenance.
+`run_direct_comparison.py`. To replay the separate exploratory runs that
+created the original archives, obtain authorized inputs and preserve their
+filenames. The literature-inspired comparison refits the historical baseline
+by default. It also accepts a scored direct comparison through `--archive`.
+Older comparison runners use their original
+`choices.json` and, in some cases, the original split-file bytes for provenance.
 The direct-comparison runner hashes the local `reference.txt` literature
 excerpt as part of its source manifest.
 

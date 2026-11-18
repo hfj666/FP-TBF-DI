@@ -1,4 +1,5 @@
 """Generate the evidence revision from the previous manuscript and saved results."""
+import argparse
 import json
 from pathlib import Path
 
@@ -18,6 +19,21 @@ def values(row):
 
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--write-manuscript', action='store_true',
+                        help='Also build the historical manuscript revision from a local draft.')
+    args = parser.parse_args()
+    matched, grouped = read('matched_summary.json'), read('grouped_summary.json')
+    frozen = read('frozen_update/summary.json')
+    if not args.write_manuscript:
+        summary = {
+            'stream': {name: row['means'] for name, row in matched['stream'].items()},
+            'holdout_849': {name: row['means'] for name, row in matched['holdout_849'].items()},
+            'grouped': {name: row['means'] for name, row in grouped.items()},
+            'frozen_stream': frozen['frozen']['means'],
+        }
+        print(json.dumps(summary, indent=2))
+        return
     old = PAPER / 'FP_TBF_DI_中文论文精简修订稿.md'
     s = old.read_text(encoding='utf-8')
 
@@ -56,7 +72,6 @@ def main():
 
 """ + mark, 1)
 
-    matched, grouped = read('matched_summary.json'), read('grouped_summary.json')
     stream, holdout = matched['stream'], matched['holdout_849']
     baseline_names = dict(fp_tbf_di='FP-TBF-DI', raw_lr='原始编码逻辑回归',
                           onehot_lr='独热逻辑回归', interaction_lr='交互逻辑回归',
@@ -73,7 +88,6 @@ def main():
 
     replacements = '\n'.join(f"| {name} | {values(stream[key])} | {net(stream[key])} | {values(holdout[key])} | {net(holdout[key])} |"
                              for key, name in replacement_names.items())
-    frozen = read('frozen_update/summary.json')
     section = f"""### 5.11 常规模型与评分向量分组对照
 
 **表15 同协议基线比较（每格依次为准确率/%、BA/%、AUC）**

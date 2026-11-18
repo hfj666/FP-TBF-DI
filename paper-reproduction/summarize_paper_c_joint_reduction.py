@@ -1,4 +1,5 @@
 """Promote the pre-specified DI candidate only after its classification audit."""
+import argparse
 import csv
 import hashlib
 import json
@@ -46,6 +47,10 @@ def table(title,summary,names):
 
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--write-manuscript', action='store_true',
+                        help='Also build the historical manuscript revision from a local draft.')
+    args = parser.parse_args()
     summary=json.loads((OUT/'summary.json').read_text(encoding='utf-8'))
     manifest=json.loads((OUT/'manifest.json').read_text(encoding='utf-8'))
     assert summary['decision']['adopt_simplified']
@@ -122,6 +127,8 @@ D层最多19次、I层最多33次辅助逻辑模型拟合，合计上限52次；
 复现材料位于`results/paper_c_joint_reduction/`，包括`predictions.csv`、`summary.json`、`checks.json`、`configuration_metrics.csv`及`updated_method_metrics.json`。实验协议为`paper/C路联合删减实验协议.md`，运行脚本为`run_paper_c_joint_reduction.py`。
 '''
     (ROOT/'paper/C路联合删减与方法精简报告.md').write_text(report,encoding='utf-8')
+    if not args.write_manuscript:
+        return
 
     text=(ROOT/'paper/FP_TBF_中文论文_补充实验修订稿.md').read_text(encoding='utf-8')
     def replace(a,b):
